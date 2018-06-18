@@ -60,3 +60,5 @@ while not areSameDay(date, today): # foreach day
 	
 # Save Spreadsheet
 workbook.save(filename)
+
+print("DarkSky Parser: Success!")
