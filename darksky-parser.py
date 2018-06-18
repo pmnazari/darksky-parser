@@ -4,6 +4,8 @@ import requests
 from pprint import pprint
 
 from openpyxl import Workbook, load_workbook
+from openpyxl.styles import PatternFill, Color
+
 from darksky import forecast
 
 # Constants
@@ -12,6 +14,8 @@ api_key = "51e2256fa5b19e8e9ac16c7bde4acc8a"
 
 latitude = 33.7591
 longitude = -118.3872
+
+grey = Color(rgb="EEEEEE")
 
 # Load Spreadsheet
 workbook = load_workbook(filename)
@@ -52,9 +56,17 @@ while not areSameDay(date, today): # foreach day
 		
 		new_row = [None] * (max(fields.keys()) + 1)
 		for column, field in fields.items():
-			new_row[column] = data_point[field]
+			if field in data_point:
+				new_row[column] = data_point[field]
 		
 		worksheet.append(new_row)
+		
+		# color alternating days
+		if data_point["date"].toordinal() % 2 == 0:
+			row = worksheet.max_row
+			for col in range(1, 100):
+				cell = worksheet.cell(column=col, row=row)
+				cell.fill = PatternFill(patternType="solid", fgColor=grey)
 	
 	date += datetime.timedelta(days = 1)
 	
